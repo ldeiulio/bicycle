@@ -13,10 +13,10 @@ class Bicycle:
 
 class Manufacturer:
 
-    def __init__(self, name, bike_model_0, bike_model_1, bike_model_2, percent_over_cost):
+    def __init__(self, name, bikes_made, margin):
         self.name = name
-        self.bikes_made = [bike_model_0, bike_model_1, bike_model_2]
-        self.percent_over_cost = percent_over_cost
+        self.bikes_made = bikes_made
+        self.margin = margin
 
     def make_bike(self, bike_listing_num):
         bike = self.bikes_made[bike_listing_num]
@@ -29,13 +29,31 @@ class BikeShop:
         self.name = name
         self.inventory = inventory
         self.profit = 0
-        self.margin = margin
+        self.margin = 1 + margin
+
+    def sell_bike(self, bike, customer):
+        bike_index = self.inventory[0].index(bike)
+        self.inventory[1][bike_index] -= 1
+        if self.inventory[1][bike_index] == 0:
+            del self.inventory[0][bike_index]
+            del self.inventory[1][bike_index]
+        self.profit += self.margin * bike.cost - (1 + bike.manufacturer.margin) * bike.cost
+        customer.budget -= self.margin * bike.cost
+        customer.bikes_owned.append(bike)
+        return bike
+
+    def bikes_in_budget(self, budget):
+        bike_list = []
+        for bike in self.inventory[0]:
+            if self.margin * bike.cost < budget:
+                bike_list.append(bike)
+        return bike_list
 
 
 class Customer:
 
     def __init__(self, name, budget):
-        self.name = name;
+        self.name = name
         self.budget = budget
         self.bikes_owned = []
 

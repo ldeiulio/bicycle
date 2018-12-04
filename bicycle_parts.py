@@ -12,6 +12,7 @@ class Wheel(BikePart):
     def __init__(self, weight, cost, model, type_number):
         super().__init__(weight, cost)
         self.type = self.types[type_number]
+        self.type_number = type_number
         self.model = model
 
 
